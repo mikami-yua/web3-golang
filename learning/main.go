@@ -2,10 +2,13 @@ package main
 
 import (
 	"context"
+	"crypto/ecdsa"
+	"encoding/hex"
 	"fmt"
 	"github.com/ethereum/go-ethereum/accounts/keystore"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
+	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"io/ioutil"
@@ -117,7 +120,7 @@ func test4ether() {
 	//if err != nil {
 	//	log.Fatal(err)
 	//}
-	addr1 := "d3783d0cd2f88ec1b1ea8e7fbe5c2d62a446670e"
+	addr1 := "0x2CD1b8cCe7b1F3c2e2514CfB26Ef4C02daE59143"
 	addr2 := "71d682da0658de7e38da835c44b2d5e0ceca42c0"
 	client, err := ethclient.Dial(localUrl)
 	if err != nil {
@@ -134,8 +137,61 @@ func test4ether() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(balance1) // 0
+	fmt.Println(balance1) // 100000000000000000000
 	fmt.Println(balance2) // 0
+
+	nonce, err := client.PendingNonceAt(context.Background(), a1)
+	if err != nil {
+		log.Fatal(err)
+	}
+	amount := big.NewInt(1000000000000000000)
+	gasPrice, err := client.SuggestGasPrice(context.Background())
+	if err != nil {
+		log.Fatal(err)
+	}
+	tx := types.NewTransaction(nonce, a2, amount, 21000, gasPrice, nil)
+
+	chainID, err := client.NetworkID(context.Background())
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("aaaaaa")
+	prvKeyStr := "af6f17ec2368f152a2cabe8423bc108fe8ef864c86d9285358e3662fb5a1b045"
+	pvk, err := converPrvKey2Struct(prvKeyStr)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	tx, err = types.SignTx(tx, types.NewEIP155Signer(chainID), pvk)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = client.SendTransaction(context.Background(), tx)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("tx send ", tx.Hash().Hex()) //0xa32fab687701b4871ac621100bcd0f25c2225cfe9015ec48c7c6b1a7da1cb7e3
+}
+
+func converPrvKey2Struct(prvStr string) (*ecdsa.PrivateKey, error) {
+	privateKeyHex := prvStr // 替换为你的私钥字符串（不带 "0x" 前缀）
+
+	// 将十六进制字符串转换为字节数组
+	privateKeyBytes, err := hex.DecodeString(privateKeyHex)
+	if err != nil {
+		log.Fatalf("Failed to decode private key hex: %v", err)
+		return nil, err
+	}
+
+	// 使用 go-ethereum 的 crypto 库将字节数组解析为 *ecdsa.PrivateKey
+	privateKey, err := crypto.ToECDSA(privateKeyBytes)
+	if err != nil {
+		log.Fatalf("Failed to convert to ECDSA private key: %v", err)
+		return nil, err
+	}
+	return privateKey, nil
 }
 
 func main() {
@@ -144,5 +200,5 @@ func main() {
 	//wallet()
 	//tryGetPrivateKeyFromWalletByPasswd()
 	//test4ether()
-	//https://www.youtube.com/watch?v=GozOP-S3RiM&list=PLay9kDOVd_x7hbhssw4pTKZHzzc6OG0e_&index=6
+	// https://www.youtube.com/watch?v=NFVakpTKvUg
 }
