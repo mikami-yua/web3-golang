@@ -200,5 +200,5 @@ func main() {
 	//wallet()
 	//tryGetPrivateKeyFromWalletByPasswd()
 	//test4ether()
-	// https://www.youtube.com/watch?v=NFVakpTKvUg
+	// https://www.youtube.com/watch?v=p62KCZ0VD7s
 }
