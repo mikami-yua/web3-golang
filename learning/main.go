@@ -200,5 +200,10 @@ func main() {
 	//wallet()
 	//tryGetPrivateKeyFromWalletByPasswd()
 	//test4ether()
-	// https://www.youtube.com/watch?v=p62KCZ0VD7s
+	// https://www.youtube.com/watch?v=bXWKGg2OAd0
+	/*
+		根据sol生成代码
+		1.生成.bin和.abi文件 solc --bin --abi contract/todo.sol -o build
+		2.根据.bin和.abi文件生成go文件 abigen --bin=build/Todo.bin --abi=build/Todo.abi --pkg=todo --out=gen/todo.go
+	*/
 }
