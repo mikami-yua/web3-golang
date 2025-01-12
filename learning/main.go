@@ -15,6 +15,7 @@ import (
 	"log"
 	"math"
 	"math/big"
+	"web3-golang/crud4contract"
 )
 
 // online test web: https://developer.metamask.io/key/bc339063a9b54795a3097d2e9b7d413f/active-endpoints
@@ -120,7 +121,7 @@ func test4ether() {
 	//if err != nil {
 	//	log.Fatal(err)
 	//}
-	addr1 := "0x2CD1b8cCe7b1F3c2e2514CfB26Ef4C02daE59143"
+	addr1 := "0xC19A49B53Bc882428C808fd2742fEe28fc35a35B"
 	addr2 := "71d682da0658de7e38da835c44b2d5e0ceca42c0"
 	client, err := ethclient.Dial(localUrl)
 	if err != nil {
@@ -156,7 +157,7 @@ func test4ether() {
 		log.Fatal(err)
 	}
 	fmt.Println("aaaaaa")
-	prvKeyStr := "af6f17ec2368f152a2cabe8423bc108fe8ef864c86d9285358e3662fb5a1b045"
+	prvKeyStr := "add1b3972dbda62de5fa5f32d089a296f0963058250ab0f413b7aeb14dcbe913"
 	pvk, err := converPrvKey2Struct(prvKeyStr)
 	if err != nil {
 		log.Fatal(err)
@@ -206,4 +207,6 @@ func main() {
 		1.生成.bin和.abi文件 solc --bin --abi contract/todo.sol -o build
 		2.根据.bin和.abi文件生成go文件 abigen --bin=build/Todo.bin --abi=build/Todo.abi --pkg=todo --out=gen/todo.go
 	*/
+	// deploy.DeployContract()
+	crud4contract.ActionWithContract()
 }
